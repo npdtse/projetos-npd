@@ -147,7 +147,7 @@ const NPD_PROJECTS = [
     },
     {
         id: "ecosistema-portal",
-        title: "Ecossistema Único de Soluções Online da SAU",
+        title: "Acompanhamento do Plano de Ação da SAU",
         type: "app",
         status: "queue",
         url: null,
