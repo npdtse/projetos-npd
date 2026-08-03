@@ -14,7 +14,7 @@
     <!-- Font Awesome (Ícones) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- SweetAlert2 (Notificações e Alertas) -->
+    <!-- SweetAlert2 (Notificações de Projetos sem Link) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     
     <!-- Estilo customizado da aplicação -->
@@ -25,7 +25,7 @@
     <!-- === [CAPÍTULO] CABEÇALHO DA SPA === -->
     <header class="npd-header">
         <div class="npd-header__container">
-            <!-- Branding Inicial (Ocultado via JS na visualização interna) -->
+            <!-- Branding Institucional -->
             <div id="header-brand" class="npd-header__brand">
                 <div class="npd-header__logo-wrapper">
                     <i class="fa-solid fa-scale-balanced npd-header__logo"></i>
@@ -34,19 +34,6 @@
                     <h1 class="npd-header__title">Secretaria de Auditoria</h1>
                     <span class="npd-header__subtitle">Tribunal Superior Eleitoral • NPD 2026</span>
                 </div>
-            </div>
-
-            <!-- Cabeçalho Dinâmico da Ferramenta Ativa (Exibido apenas na visualização interna) -->
-            <div id="header-active-tool" class="npd-header__active-tool npd-u-hidden">
-                <button id="btn-back-hub" class="npd-btn npd-btn--secondary" aria-label="Voltar para o Painel Geral">
-                    <i class="fa-solid fa-arrow-left"></i>
-                    <span class="npd-btn__text">Mudar Processo</span>
-                </button>
-                <button id="btn-toggle-sidebar" class="npd-btn npd-btn--secondary" aria-label="Abrir Lista de Soluções">
-                    <i class="fa-solid fa-bars"></i>
-                    <span class="npd-btn__text">Ver Lista de Soluções</span>
-                </button>
-                <h2 id="active-tool-title" class="npd-header__active-title"></h2>
             </div>
 
             <!-- Controles Globais -->
@@ -59,37 +46,9 @@
         </div>
     </header>
 
-    <!-- Navegação Lateral Integrada (Opção C - Movida para a raiz para evitar conflito de Transform) -->
-    <aside class="npd-sidebar" aria-label="Menu de ferramentas do portfólio" id="sidebar-drawer">
-        <div class="npd-sidebar__header">
-            <span class="npd-sidebar__title">Menu de Soluções</span>
-        </div>
-        <nav class="npd-sidebar__nav">
-            <div class="npd-sidebar__group">
-                <span class="npd-sidebar__group-title">Desenvolvido</span>
-                <div class="npd-sidebar__group-list" id="sidebar-delivered">
-                    <!-- Botões inseridos dinamicamente -->
-                </div>
-            </div>
-            <div class="npd-sidebar__group">
-                <span class="npd-sidebar__group-title">Em Desenvolvimento</span>
-                <div class="npd-sidebar__group-list" id="sidebar-progress">
-                    <!-- Botões inseridos dinamicamente -->
-                </div>
-            </div>
-            <div class="npd-sidebar__group">
-                <span class="npd-sidebar__group-title">Na Fila / Estudo</span>
-                <div class="npd-sidebar__group-list" id="sidebar-queue">
-                    <!-- Botões inseridos dinamicamente -->
-                </div>
-            </div>
-        </nav>
-    </aside>
-
-    <!-- === [CAPÍTULO] ÁREA PRINCIPAL (CONTEÚDO DINÂMICO) === -->
+    <!-- === [CAPÍTULO] ÁREA PRINCIPAL (PORTAL LAUNCHPAD HUB) === -->
     <main class="npd-main" id="main-area">
 
-        <!-- --- [Seção] Portal Hub (Visão Geral) --- -->
         <section id="portal-view" class="npd-view">
             <div class="npd-container">
                 <header class="npd-view__header">
@@ -97,6 +56,7 @@
                     <p class="npd-view__description">
                         Painel técnico de ferramentas desenvolvidas, em desenvolvimento e em estudo pelo Núcleo de Pesquisa e Desenvolvimento (NPD) no ano de 2026.
                     </p>
+                    <br>
                 </header>
 
                 <!-- Catálogo de Tipos e Filtro Integrado -->
@@ -120,7 +80,7 @@
                         </button>
                         <button class="npd-catalog-card" data-filter="site" aria-pressed="false">
                             <i class="fa-solid fa-globe npd-catalog-card__icon"></i>
-                            <span class="npd-catalog-card__name">Sites / Portais</span>
+                            <span class="npd-catalog-card__name">Sites</span>
                             <span class="npd-catalog-card__badge" id="count-site">0</span>
                         </button>
                         <button class="npd-catalog-card" data-filter="app" aria-pressed="false">
@@ -147,7 +107,7 @@
                             <span class="npd-portfolio-column__count" id="count-delivered">0</span>
                         </div>
                         <div class="npd-portfolio-column__list" id="list-delivered">
-                            <!-- Cards simplificados (sem etiquetas) inseridos por script.js -->
+                            <!-- Cards de acionamento direto inseridos por script.js -->
                         </div>
                     </div>
 
@@ -159,7 +119,7 @@
                             <span class="npd-portfolio-column__count" id="count-progress">0</span>
                         </div>
                         <div class="npd-portfolio-column__list" id="list-progress">
-                            <!-- Cards simplificados inseridos por script.js -->
+                            <!-- Cards de acionamento direto inseridos por script.js -->
                         </div>
                     </div>
 
@@ -171,7 +131,7 @@
                             <span class="npd-portfolio-column__count" id="count-queue">0</span>
                         </div>
                         <div class="npd-portfolio-column__list" id="list-queue">
-                            <!-- Cards simplificados inseridos por script.js -->
+                            <!-- Cards de acionamento direto inseridos por script.js -->
                         </div>
                     </div>
 
@@ -179,99 +139,7 @@
             </div>
         </section>
 
-        <!-- --- [Seção] Apresentação da Ferramenta Ativa --- -->
-        <section id="presenter-view" class="npd-view npd-u-hidden">
-            <div class="npd-presenter-layout">
-                
-                <!-- Área Central de Conteúdo Técnico da Ferramenta -->
-                <article class="npd-detail-panel" id="detail-panel">
-                    
-                    <!-- Cabeçalho Interno (Exibe apenas a etiqueta de status) -->
-                    <header class="npd-detail-panel__header">
-                        <div class="npd-detail-panel__title-area">
-                            <span class="npd-detail-panel__type-label" id="detail-tool-type">Planilha</span>
-                            <h3 class="npd-detail-panel__title" id="detail-tool-name">Nome do Projeto</h3>
-                        </div>
-                        <div class="npd-detail-panel__badges" id="detail-badges-container">
-                            <!-- Etiqueta de status inserida dinamicamente -->
-                        </div>
-                    </header>
-
-                    <!-- Mockup de Interface Real -->
-                    <section class="npd-mockup" aria-label="Visualização do sistema">
-                        <div class="npd-mockup__screen" id="detail-screenshot-container">
-                            <div class="npd-mockup__placeholder-content">
-                                <i class="fa-regular fa-image npd-mockup__placeholder-icon"></i>
-                                <p class="npd-mockup__placeholder-text">
-                                    Mockup ilustrativo do projeto para captura de tela.
-                                </p>
-                                <span class="npd-mockup__placeholder-file" id="detail-file-label">[screenshot_arquivo.png]</span>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Conteúdo Técnico Contínuo (Sem Abas) -->
-                    <section class="npd-detail-content">
-                        <div class="npd-info-block">
-                            <h4 class="npd-info-block__title">
-                                <i class="fa-solid fa-circle-info"></i> Objetivo da Ferramenta
-                            </h4>
-                            <p class="npd-info-block__text" id="detail-objective">
-                                Descrição do objetivo do projeto.
-                            </p>
-                        </div>
-
-                        <div class="npd-info-block" style="margin-top: 24px;">
-                            <h4 class="npd-info-block__title">
-                                <i class="fa-solid fa-gears"></i> Funcionamento Técnico
-                            </h4>
-                            <p class="npd-info-block__text" id="detail-operation">
-                                Descrição do funcionamento técnico.
-                            </p>
-                        </div>
-
-                        <div class="npd-info-block" style="margin-top: 24px;">
-                            <h4 class="npd-info-block__title">
-                                <i class="fa-solid fa-users"></i> Beneficiários e Utilidade Prática
-                            </h4>
-                            <p class="npd-info-block__text" id="detail-benefits">
-                                Descrição dos beneficiários e ganho real.
-                            </p>
-                        </div>
-
-                        <!-- Seção de Coautoria -->
-                        <div class="npd-info-block npd-info-block--highlight" style="margin-top: 24px;">
-                            <h4 class="npd-info-block__title">
-                                <i class="fa-solid fa-handshake"></i> Coautoria do Projeto
-                            </h4>
-                            <p class="npd-info-block__text" id="detail-coauthorship">
-                                Execução técnica desenvolvida pelo NPD em parceria com as unidades da SAU.
-                            </p>
-                        </div>
-                    </section>
-
-                </article>
-
-            </div>
-        </section>
-
     </main>
-
-    <!-- === [CAPÍTULO] MENUS INFERIORES E COMPONENTES MÓVEIS === -->
-    <nav class="npd-mobile-nav npd-u-hidden" aria-label="Navegação móvel">
-        <button class="npd-mobile-nav__btn active" id="btn-mobile-home" aria-label="Ir para o Painel Geral">
-            <i class="fa-solid fa-grid-2"></i>
-            <span class="npd-mobile-nav__text">Portfólio</span>
-        </button>
-        <button class="npd-mobile-nav__btn" id="btn-mobile-sidebar" aria-label="Abrir Menu de Processos">
-            <i class="fa-solid fa-list-check"></i>
-            <span class="npd-mobile-nav__text">Soluções</span>
-        </button>
-        <button class="npd-mobile-nav__btn" id="btn-mobile-info" aria-label="Visualizar Informações do Ativo">
-            <i class="fa-solid fa-circle-info"></i>
-            <span class="npd-mobile-nav__text">Detalhes</span>
-        </button>
-    </nav>
 
     <!-- === [CAPÍTULO] EXECUÇÃO DE SCRIPTS (CDNs) === -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
