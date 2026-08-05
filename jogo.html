@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAU Game Theory - Dilema do Prisioneiro</title>
+    
+    <!-- === [RECURSOS EXTERNOS] === -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Source+Sans+3:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- === [ESTILOS COM LAYOUT DE RESULTADO LIMPO] === -->
+    <style>
+        :root {
+            --bg-dark: #0F172A;
+            --surface: #1E293B;
+            --surface2: #273447;
+            --border: #334155;
+            
+            --primary: #0073E6;
+            --primary-light: #4D9FFF;
+            --primary-faded: #132338;
+            
+            --cooperate: #10B981;       /* Verde Feliz/Sucesso */
+            --cooperate-faded: #064E3B;
+            --defect: #E11D48;          /* Vermelho Triste/Derrota */
+            --defect-faded: #4C0519;
+
+            --text-main: #F1F5F9;
+            --text-sub: #CBD5E1;
+            --text-muted: #94A3B8;
+
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            --transition: 200ms cubic-bezier(.4, 0, .2, 1);
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 18px;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Cabeçalho Institucional */
+        .header {
+            width: 100%;
+            background-color: var(--primary);
+            color: #FFFFFF;
+            padding: 16px 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .header__container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header__brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header__title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 13px;
+            color: #FFFFFF;
+            text-transform: uppercase;
+        }
+
+        .header__subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Container Principal */
+        .main {
+            max-width: 900px;
+            width: 100%;
+            padding: 36px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 24px;
+        }
+
+        .hero__badge {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            background-color: var(--primary-faded);
+            color: var(--primary-light);
+            border: 1px solid var(--primary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .hero__title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 20px;
+            color: #FFFFFF;
+            line-height: 1.4;
+        }
+
+        .hero__desc {
+            font-size: 18px;
+            color: var(--text-sub);
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        /* Formulário da Calculadora */
+        .calculator-form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 16px;
+            width: 100%;
+            background-color: var(--surface2);
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: var(--radius);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .input-group__label {
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-sub);
+        }
+
+        .input-group__select {
+            width: 100%;
+            padding: 12px 16px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-main);
+            background-color: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .input-group__select:focus {
+            border-color: var(--primary-light);
+        }
+
+        /* Grupo de Botões */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .btn-calc {
+            background-color: var(--primary);
+            color: #FFFFFF;
+            padding: 14px 24px;
+            height: 50px;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+            flex: 2;
+        }
+
+        .btn-calc:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            background-color: var(--surface);
+            color: var(--text-sub);
+            border: 2px solid var(--border);
+            padding: 14px 20px;
+            height: 50px;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+            flex: 1;
+        }
+
+        .btn-reset:hover {
+            background-color: var(--surface2);
+            color: #FFFFFF;
+            border-color: var(--text-muted);
+        }
+
+        /* Card de Resultado */
+        .result-card {
+            width: 100%;
+            background-color: var(--surface);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: var(--shadow);
+            animation: slideUp 300ms ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-card__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 13px;
+            color: var(--primary-light);
+        }
+
+        /* Grid Simplificado dos Jogadores (Apenas Imagem + Resultado) */
+        .result-card__scores {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .score-box {
+            background-color: var(--surface2);
+            border: 2px solid var(--border);
+            padding: 28px 20px;
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 16px;
+            transition: var(--transition);
+        }
+
+        /* === [BONEQUINHOS E ANIMAÇÕES DE REAÇÃO] === */
+        .avatar-character {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--surface);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: var(--text-sub);
+            transition: var(--transition);
+        }
+
+        /* Animação: Feliz / Vencedor (Comemora) */
+        @keyframes celebrateJump {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-12px) scale(1.12); }
+        }
+
+        .avatar-character.happy {
+            animation: celebrateJump 0.8s ease-in-out infinite;
+            color: var(--cooperate);
+            border-color: var(--cooperate);
+            background-color: var(--cooperate-faded);
+            box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Animação: Triste / Derrotado (Chacoalha) */
+        @keyframes sadShake {
+            0%, 100% { transform: translateY(4px) rotate(0deg); opacity: 0.8; }
+            25% { transform: translateY(6px) rotate(-6deg); }
+            75% { transform: translateY(6px) rotate(6deg); }
+        }
+
+        .avatar-character.sad {
+            animation: sadShake 1.2s ease-in-out infinite;
+            color: var(--defect);
+            border-color: var(--defect);
+            background-color: var(--defect-faded);
+        }
+
+        .score-box.happy-box {
+            border-color: var(--cooperate);
+        }
+
+        .score-box.sad-box {
+            border-color: var(--border);
+        }
+
+        .score-box__val {
+            font-size: 24px;
+            font-weight: 800;
+            color: #FFFFFF;
+        }
+
+        .result-card__footer {
+            font-size: 17px;
+            color: var(--text-sub);
+            border-top: 1px dashed var(--border);
+            padding-top: 14px;
+            line-height: 1.6;
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 650px) {
+            .calculator-form { flex-direction: column; align-items: stretch; }
+            .button-group { flex-direction: column; }
+            .result-card__scores { grid-template-columns: 1fr; }
+            .hero__title { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cabeçalho -->
+    <header class="header">
+        <div class="header__container">
+            <div class="header__brand">
+                <i class="fa-solid fa-scale-balanced" style="font-size: 20px;"></i>
+                <div>
+                    <h1 class="header__title">Secretaria de Auditoria</h1>
+                    <span class="header__subtitle">Tribunal Superior Eleitoral • Teoria dos Jogos</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Área Principal -->
+    <main class="main">
+
+        <!-- Hero Section com a Calculadora -->
+        <section class="hero">
+            <div>
+                <span class="hero__badge">Quem se livra da prisão?</span>
+                <h2 class="hero__title" style="margin-top: 12px; font-size: 20pt;">Dilema do Prisioneiro</h2>
+                <p class="hero__desc" style="margin-top: 10px;">
+                    Selecione a decisão do <strong>Jogador A</strong> e do <strong>Jogador B</strong> para calcular o resultado.
+                </p>
+            </div>
+
+            <!-- Formulário -->
+            <div class="calculator-form">
+                <div class="input-group">
+                    <label class="input-group__label" for="player-a">Decisão do Jogador A</label>
+                    <select id="player-a" class="input-group__select">
+                        <option value="confessar">🔴 Confessar (Trair)</option>
+                        <option value="nao_confessar">🟢 Não confessar (Cooperar)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-group__label" for="player-b">Decisão do Jogador B</label>
+                    <select id="player-b" class="input-group__select">
+                        <option value="confessar">🔴 Confessar (Trair)</option>
+                        <option value="nao_confessar">🟢 Não confessar (Cooperar)</option>
+                    </select>
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="button-group">
+                    <button id="btn-calculate" class="btn-calc">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span>Gerar Resultado</span>
+                    </button>
+                    
+                    <button id="btn-reset" class="btn-reset" title="Resetar opções">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        <span>Começar de novo</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card de Resultado (Exibe Apenas Imagem do Player + Resultado) -->
+            <div id="result-container" class="result-card hidden">
+                <div class="result-card__header">
+                    <i class="fa-solid fa-gavel"></i>
+                    <span id="result-title">Resultado do Julgamento</span>
+                </div>
+
+                <div class="result-card__scores">
+                    <!-- Jogador A (Imagem + Resultado) -->
+                    <div class="score-box" id="box-player-a">
+                        <div class="avatar-character" id="avatar-a">
+                            <i class="fa-solid fa-face-frown" id="icon-a"></i>
+                        </div>
+                        <div class="score-box__val" id="score-a">5 anos de prisão</div>
+                    </div>
+
+                    <!-- Jogador B (Imagem + Resultado) -->
+                    <div class="score-box" id="box-player-b">
+                        <div class="avatar-character" id="avatar-b">
+                            <i class="fa-solid fa-face-frown" id="icon-b"></i>
+                        </div>
+                        <div class="score-box__val" id="score-b">5 anos de prisão</div>
+                    </div>
+                </div>
+
+                <p class="result-card__footer" id="result-analysis">
+                    Análise técnica do desfecho.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Lógica da Calculadora e Atualização de Avatares -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const selectA = document.getElementById("player-a");
+            const selectB = document.getElementById("player-b");
+            const btnCalculate = document.getElementById("btn-calculate");
+            const btnReset = document.getElementById("btn-reset");
+            
+            const resultContainer = document.getElementById("result-container");
+            const resultTitle = document.getElementById("result-title");
+            const resultAnalysis = document.getElementById("result-analysis");
+
+            const boxA = document.getElementById("box-player-a");
+            const boxB = document.getElementById("box-player-b");
+            const scoreA = document.getElementById("score-a");
+            const scoreB = document.getElementById("score-b");
+            
+            const avatarA = document.getElementById("avatar-a");
+            const avatarB = document.getElementById("avatar-b");
+            const iconA = document.getElementById("icon-a");
+            const iconB = document.getElementById("icon-b");
+
+            // Reseta visual dos Avatares
+            function clearAvatarStates() {
+                boxA.classList.remove("happy-box", "sad-box");
+                boxB.classList.remove("happy-box", "sad-box");
+                
+                avatarA.className = "avatar-character";
+                avatarB.className = "avatar-character";
+                
+                iconA.className = "fa-solid fa-face-frown";
+                iconB.className = "fa-solid fa-face-frown";
+            }
+
+            // Função Principal de Cálculo e Reação
+            function calculateDilemma() {
+                const choiceA = selectA.value;
+                const choiceB = selectB.value;
+
+                clearAvatarStates();
+                resultContainer.classList.remove("hidden");
+
+                // CENÁRIO 1: Ambos Traem (5 anos / 5 anos) -> AMBOS TRISTES
+                if (choiceA === "confessar" && choiceB === "confessar") {
+                    resultTitle.textContent = "Equilíbrio de Silo (Ambos Confessam)";
+                    scoreA.textContent = "5 anos de prisão";
+                    scoreB.textContent = "5 anos de prisão";
+                    resultAnalysis.textContent = "Aplicação na SAU: O trabalho isolado em silos e planilhas paralelas gera sobrecarga e retrabalho para ambas as equipes (Prejuízo Mútuo).";
+
+                    avatarA.classList.add("sad");
+                    avatarB.classList.add("sad");
+                    iconA.className = "fa-solid fa-face-frown";
+                    iconB.className = "fa-solid fa-face-frown";
+                    boxA.classList.add("sad-box");
+                    boxB.classList.add("sad-box");
+                } 
+
+                // CENÁRIO 2: Ambos Cooperam (1 ano / 1 ano) -> AMBOS FELIZES (COMEMORAM)
+                else if (choiceA === "nao_confessar" && choiceB === "nao_confessar") {
+                    resultTitle.textContent = "Cooperação Mútua (Ninguém Confessa)";
+                    scoreA.textContent = "1 ano de prisão";
+                    scoreB.textContent = "1 ano de prisão";
+                    resultAnalysis.textContent = "Aplicação na SAU: A cooperação e a padronização no trabalho garantem o resultado de máxima eficiência coletiva (Ótimo de Pareto).";
+
+                    avatarA.classList.add("happy");
+                    avatarB.classList.add("happy");
+                    iconA.className = "fa-solid fa-face-laugh-beam";
+                    iconB.className = "fa-solid fa-face-laugh-beam";
+                    boxA.classList.add("happy-box");
+                    boxB.classList.add("happy-box");
+                } 
+
+                // CENÁRIO 3: A Trai / B Coopera (A: 0 anos [Feliz] / B: 10 anos [Triste])
+                else if (choiceA === "confessar" && choiceB === "nao_confessar") {
+                    resultTitle.textContent = "Vantagem Unilateral (A Confessa / B Não Confessa)";
+                    scoreA.textContent = "Livre (0 anos)";
+                    scoreB.textContent = "10 anos de prisão";
+                    resultAnalysis.textContent = "Aplicação na SAU: O Jogador A obtém ganho individual temporário, enquanto o Jogador B absorve a sobrecarga de dados incompletos.";
+
+                    avatarA.classList.add("happy");
+                    iconA.className = "fa-solid fa-face-laugh-beam";
+                    boxA.classList.add("happy-box");
+
+                    avatarB.classList.add("sad");
+                    iconB.className = "fa-solid fa-face-frown";
+                    boxB.classList.add("sad-box");
+                } 
+
+                // CENÁRIO 4: A Coopera / B Trai (A: 10 anos [Triste] / B: 0 anos [Feliz])
+                else if (choiceA === "nao_confessar" && choiceB === "confessar") {
+                    resultTitle.textContent = "Vantagem Unilateral (A Não Confessa / B Confessa)";
+                    scoreA.textContent = "10 anos de prisão";
+                    scoreB.textContent = "Livre (0 anos)";
+                    resultAnalysis.textContent = "Aplicação na SAU: O Jogador B obtém ganho individual temporário, enquanto o Jogador A absorve a sobrecarga de dados incompletos.";
+
+                    avatarA.classList.add("sad");
+                    iconA.className = "fa-solid fa-face-frown";
+                    boxA.classList.add("sad-box");
+
+                    avatarB.classList.add("happy");
+                    iconB.className = "fa-solid fa-face-laugh-beam";
+                    boxB.classList.add("happy-box");
+                }
+            }
+
+            // Função de Reset
+            function resetForm() {
+                selectA.selectedIndex = 0;
+                selectB.selectedIndex = 0;
+                clearAvatarStates();
+                resultContainer.classList.add("hidden");
+            }
+
+            btnCalculate.addEventListener("click", calculateDilemma);
+            btnReset.addEventListener("click", resetForm);
+        });
+    </script>
+</body>
+</html>
