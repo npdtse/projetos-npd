@@ -78,7 +78,7 @@ const NPD_PROJECTS = [
         title: "Questionários do PAQ-AUD",
         type: "fluxo",
         status: "progress",
-        url: "https://forms.cloud.microsoft/Pages/DesignPagev2.aspx?groupid=4e82c954-f1f0-4e7a-89d4-afde72c799eb",
+        url: null,
         screenshot: "screenshot_automacao_paq_aud.png",
         objective: "Automação do Programa de Avaliação de Qualidade das Auditorias e Consultorias da SAU (PAQ-AUD).",
         operation: "Dispara questionários aos auditados após homologação de relatórios, monitora retornos, cria pastas dedicadas de backup em rede e consolida dados em planilha gerencial.",
